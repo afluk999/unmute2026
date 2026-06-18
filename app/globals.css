@@ -1,0 +1,284 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.hero-logo-float {
+  animation: hero-logo-float 4s ease-in-out infinite;
+}
+
+@keyframes hero-logo-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(-1deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .topper-track,
+  .reel-track {
+    animation-duration: 28s;
+  }
+}
+
+.talking-logo {
+  animation: talking-logo 0.85s ease-in-out infinite;
+  filter: drop-shadow(0 18px 18px rgba(17, 17, 17, 0.16));
+}
+
+@keyframes talking-logo {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  25% {
+    transform: translateY(-3px) scale(1.015);
+  }
+
+  50% {
+    transform: translateY(2px) scale(0.99);
+  }
+
+  75% {
+    transform: translateY(-2px) scale(1.01);
+  }
+}
+
+.speaking-logo {
+  animation: speaking-logo 1.1s ease-in-out infinite;
+}
+
+@keyframes speaking-logo {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+    filter: drop-shadow(0 16px 18px rgba(17, 17, 17, 0.16));
+  }
+
+  35% {
+    transform: scale(1.035, 0.985) translateY(-3px);
+    filter: drop-shadow(0 24px 22px rgba(232, 24, 24, 0.18));
+  }
+
+  65% {
+    transform: scale(0.99, 1.025) translateY(2px);
+  }
+}
+
+.mouth-glow {
+  animation: mouth-glow 0.8s ease-in-out infinite;
+}
+
+@keyframes mouth-glow {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scaleX(0.85);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scaleX(1.18);
+  }
+}
+
+.voice-wave {
+  position: absolute;
+  left: 28px;
+  top: 70px;
+  height: 44px;
+  width: 44px;
+  border-left: 5px solid #f2b600;
+  border-radius: 999px;
+  opacity: 0;
+  transform-origin: center;
+  animation: voice-wave 1.2s ease-out infinite;
+}
+
+.voice-wave-1 {
+  animation-delay: 0s;
+}
+
+.voice-wave-2 {
+  height: 62px;
+  width: 62px;
+  left: 18px;
+  top: 61px;
+  animation-delay: 0.18s;
+}
+
+.voice-wave-3 {
+  height: 82px;
+  width: 82px;
+  left: 8px;
+  top: 51px;
+  animation-delay: 0.36s;
+}
+
+@keyframes voice-wave {
+  0% {
+    opacity: 0;
+    transform: scale(0.65);
+  }
+
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.18);
+  }
+}
+
+.loader-dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 999px;
+  background: #e81818;
+  animation: loader-dot 0.8s ease-in-out infinite;
+}
+
+.loader-dot-delay-1 {
+  animation-delay: 0.15s;
+}
+
+.loader-dot-delay-2 {
+  animation-delay: 0.3s;
+}
+
+@keyframes loader-dot {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+
+  50% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  margin: 0;
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: #f6f3ee;
+  color: #111111;
+}
+
+button {
+  font: inherit;
+}
+
+::selection {
+  background: #e81818;
+  color: white;
+}
+
+.topper-track {
+  animation: topper-scroll 35s linear infinite;
+}
+
+.topper-track:hover {
+  animation-play-state: paused;
+}
+
+.reel-track {
+  animation: reel-scroll 32s linear infinite;
+}
+
+.reel-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes topper-scroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes reel-scroll {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+.result-cta-glow {
+  animation: result-glow 4s ease-in-out infinite;
+}
+
+.result-float {
+  animation: result-float 3.5s ease-in-out infinite;
+}
+
+.result-shine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-120%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.45),
+    transparent
+  );
+  animation: result-shine 2.8s ease-in-out infinite;
+}
+
+@keyframes result-glow {
+  0%,
+  100% {
+    box-shadow: 14px 14px 30px #d8d3cc, -14px -14px 30px #ffffff;
+  }
+
+  50% {
+    box-shadow: 14px 14px 40px #cfc8be, -14px -14px 40px #ffffff;
+  }
+}
+
+@keyframes result-float {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translateY(0);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) translateY(-14px);
+  }
+}
+
+@keyframes result-shine {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  55%,
+  100% {
+    transform: translateX(120%);
+  }
+}

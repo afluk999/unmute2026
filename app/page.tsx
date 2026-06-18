@@ -1305,7 +1305,7 @@ function Footer() {
           <div>
             <div className="flex items-center">
   <img
-    src="/brand/LOGO WHITE.png"
+    src="/brand/LOGO BLACK.png"
     alt="UNMUTE2K26 footer logo"
     className="h-auto w-[300px] max-w-full object-contain"
   />

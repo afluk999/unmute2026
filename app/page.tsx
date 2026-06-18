@@ -931,15 +931,6 @@ type HomeReel = {
   createdAt: string;
 };
 
-type HomeReel = {
-  id: string;
-  title: string;
-  tag: string;
-  description: string;
-  videoUrl: string;
-  thumbnailUrl: string;
-  createdAt: string;
-};
 
 function VideoReelsPreview() {
   const [activeReel, setActiveReel] = useState(0);

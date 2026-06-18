@@ -1,4 +1,4 @@
-import sharp from "sharp";
+
 import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "crypto";
 import { cert, getApps, initializeApp } from "firebase-admin/app";

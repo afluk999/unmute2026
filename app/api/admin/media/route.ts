@@ -117,23 +117,7 @@ export async function GET() {
 }
 
 async function optimizeImage(file: File, buffer: Buffer) {
-  if (!file.type.startsWith("image/")) {
-    return buffer;
-  }
-
-  return sharp(buffer)
-    .rotate()
-    .resize({
-      width: 2160,
-      height: 2700,
-      fit: "inside",
-      withoutEnlargement: true,
-    })
-    .jpeg({
-      quality: 82,
-      mozjpeg: true,
-    })
-    .toBuffer();
+  return buffer;
 }
 
 export async function POST(request: NextRequest) {

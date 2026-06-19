@@ -77,15 +77,9 @@ export default function IndividualResultsPage() {
     }
   }
 
-  useEffect(() => {
-    fetchResults();
-
-    const interval = setInterval(() => {
-      fetchResults();
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
+useEffect(() => {
+  fetchResults();
+}, []);
 
   const studentProfiles = useMemo(() => {
     return buildStudentProfiles(results);

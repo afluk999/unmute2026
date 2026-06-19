@@ -1272,10 +1272,10 @@ function AnimatedFestBrand({
         }`}
       >
         <img
-          src="/brand/logo-black.png"
-          alt="UNMUTE2K26 footer logo"
-          className="h-12 w-[210px] object-contain md:h-14 md:w-[300px]"
-        />
+  src="/brand/logo-black.png"
+  alt="UNMUTE2K26"
+  className="h-10 w-auto object-contain"
+/>
       </span>
 
       {/* Sparkle */}

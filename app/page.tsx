@@ -27,6 +27,8 @@ import {
   Video,
 } from "lucide-react";
 
+
+
 type LiveTeam = {
   rank: number;
   name: string;

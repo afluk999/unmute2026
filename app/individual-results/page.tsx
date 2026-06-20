@@ -8,7 +8,6 @@ import {
   BookOpen,
   ChevronLeft,
   Filter,
-  Medal,
   Mic2,
   PenLine,
   RefreshCcw,
@@ -31,8 +30,9 @@ type LiveResult = {
   points: number;
   updatedAt?: string;
   individualPoints?: number;
- isFaceToFace?: boolean;
- participants?: string[];
+  isFaceToFace?: boolean;
+  participants?: string[];
+  programType?: string;
 };
 
 type StudentProfile = {
@@ -48,6 +48,54 @@ type StudentProfile = {
   gradeBCount: number;
   entries: LiveResult[];
 };
+
+function normalizeText(value?: string) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z]/g, "");
+}
+
+function normalizeCategoryName(category?: string) {
+  const value = normalizeText(category);
+
+  if (value === "bidaya") return "Bidaya";
+  if (value === "ula" || value === "uoola") return "Ula";
+  if (value === "thaniya") return "Thaniya";
+  if (value === "thanawiyyah" || value === "thanawiyya") return "Thanawiyyah";
+  if (value === "aliya") return "Aliya";
+
+  if (
+    value === "kulliyya" ||
+    value === "kulliyyah" ||
+    value === "kulliyah" ||
+    value === "kuliya" ||
+    value === "kuliyya"
+  ) {
+    return "Kulliyya";
+  }
+
+  return String(category || "-").trim() || "-";
+}
+
+function isKulliyyaCategory(category?: string) {
+  return normalizeCategoryName(category) === "Kulliyya";
+}
+
+function isTeamOnlyProgram(result: LiveResult) {
+  const programType = normalizeText(result.programType);
+
+  return (
+    programType === "group" ||
+    programType === "campustalent" ||
+    isKulliyyaCategory(result.category)
+  );
+}
+
+function getIndividualPoints(result: LiveResult) {
+  if (isTeamOnlyProgram(result)) return 0;
+
+  return Number(result.individualPoints ?? 0) || 0;
+}
 
 export default function IndividualResultsPage() {
   const [results, setResults] = useState<LiveResult[]>([]);
@@ -77,9 +125,9 @@ export default function IndividualResultsPage() {
     }
   }
 
-useEffect(() => {
-  fetchResults();
-}, []);
+  useEffect(() => {
+    fetchResults();
+  }, []);
 
   const studentProfiles = useMemo(() => {
     return buildStudentProfiles(results);
@@ -110,10 +158,6 @@ useEffect(() => {
     "Thaniya",
     "Thanawiyyah",
     "Aliya",
-    "Kulliyah",
-    "Uoola",
-    "Thanawiyya",
-    "Kulliyyah",
   ];
 
   return (
@@ -131,8 +175,8 @@ useEffect(() => {
               </h1>
 
               <p className="mt-5 max-w-2xl text-base font-medium leading-7 text-[#666]">
-                Search a student or group name and view all programmes, prize
-                details, grade, and total points.
+                Search a student name and view only individual programmes,
+                prize details, grade, and total individual points.
               </p>
             </div>
 
@@ -151,7 +195,7 @@ useEffect(() => {
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search student or group name..."
+                placeholder="Search student name..."
                 className="w-full bg-transparent text-sm font-bold outline-none placeholder:text-[#999]"
               />
             </div>
@@ -204,7 +248,7 @@ useEffect(() => {
         ) : (
           <EmptyState
             title="No student result found"
-            text="Try another name, team, or category."
+            text="Kulliyya, Group, and Campus Talent results are not counted here."
           />
         )}
       </section>
@@ -216,6 +260,11 @@ function buildStudentProfiles(results: LiveResult[]) {
   const map = new Map<string, StudentProfile>();
 
   results.forEach((result) => {
+    if (isTeamOnlyProgram(result)) return;
+
+    const personalPoints = getIndividualPoints(result);
+    if (personalPoints <= 0) return;
+
     const participants =
       Array.isArray(result.participants) && result.participants.length > 0
         ? result.participants
@@ -226,7 +275,7 @@ function buildStudentProfiles(results: LiveResult[]) {
     participants.forEach((participantName) => {
       const student = participantName || "-";
       const team = result.team || "-";
-      const category = result.category || "-";
+      const category = normalizeCategoryName(result.category);
       const key = `${student}__${team}__${category}`;
 
       if (!map.has(key)) {
@@ -248,13 +297,12 @@ function buildStudentProfiles(results: LiveResult[]) {
       const profile = map.get(key);
       if (!profile) return;
 
-      const personalPoints =
-        Number(result.individualPoints ?? result.points) || 0;
-
       const personalEntry: LiveResult = {
         ...result,
         student,
+        category,
         points: personalPoints,
+        individualPoints: personalPoints,
       };
 
       profile.totalPoints += personalPoints;

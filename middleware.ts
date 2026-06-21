@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 function isAllowedPath(pathname: string) {
   return (
     pathname === "/maintenance" ||
+    pathname === "/inauguration" ||
     pathname.startsWith("/admin") ||
     pathname.startsWith("/api/admin") ||
     pathname.startsWith("/_next") ||
@@ -13,6 +14,7 @@ function isAllowedPath(pathname: string) {
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml" ||
     pathname.includes(".")
+    
   );
 }
 

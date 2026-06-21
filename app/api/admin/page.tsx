@@ -1,5 +1,6 @@
 "use client";
 
+import MaintenanceToggle from "@/components/admin/MaintenanceToggle";
 import type { FormEvent, ReactNode } from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";

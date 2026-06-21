@@ -1,5 +1,6 @@
 "use client";
 
+import MaintenanceToggle from "@/components/admin/MaintenanceToggle";
 import type { FormEvent, ReactNode } from "react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -338,13 +339,16 @@ export default function AdminPage() {
           <h1 className="text-4xl font-black tracking-[-0.04em] md:text-6xl">
             Admin Panel
           </h1>
+<p className="mt-4 max-w-2xl text-sm font-medium leading-7 text-[#666] md:text-base">
+  Add gallery photos, reel links with thumbnails, and official
+  downloads. You can view and delete uploaded items below.
+</p>
 
-          <p className="mt-4 max-w-2xl text-sm font-medium leading-7 text-[#666] md:text-base">
-            Add gallery photos, reel links with thumbnails, and official
-            downloads. You can view and delete uploaded items below.
-          </p>
+<div className="mt-8">
+  <MaintenanceToggle />
+</div>
 
-          <div className="my-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+<div className="my-8 grid grid-cols-1 gap-4 md:grid-cols-3">
             <TypeButton
               active={type === "gallery"}
               onClick={() => setType("gallery")}

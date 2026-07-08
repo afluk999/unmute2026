@@ -20,7 +20,6 @@ import {
   Trophy,
 } from "lucide-react";
 
-
 type LiveTeam = {
   rank: number;
   name: string;
@@ -44,8 +43,8 @@ type LiveResult = {
   points: number;
   updatedAt?: string;
   individualPoints?: number;
-isFaceToFace?: boolean;
-participants?: string[];
+  isFaceToFace?: boolean;
+  participants?: string[];
 };
 
 type CategoryScore = {
@@ -111,8 +110,10 @@ export default function ResultPage() {
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState("");
 
-  async function fetchLiveData() {
+  async function fetchFinalData() {
     try {
+      setLoading(true);
+
       const response = await fetch("/api/live", {
         cache: "no-store",
       });
@@ -142,13 +143,7 @@ export default function ResultPage() {
   }
 
   useEffect(() => {
-    fetchLiveData();
-
-    const interval = setInterval(() => {
-      fetchLiveData();
-    }, 10000);
-
-    return () => clearInterval(interval);
+    fetchFinalData();
   }, []);
 
   const categories = [
@@ -165,21 +160,21 @@ export default function ResultPage() {
   const prizeFilters = ["All", "First Prize", "Second Prize", "Third Prize"];
 
   const filteredProgramResults = useMemo(() => {
-  const filteredRows = liveData.results.filter((item) => {
-    const searchText =
-      `${item.code} ${item.program} ${item.student} ${item.team} ${item.category} ${item.prize} ${item.grade}`.toLowerCase();
+    const filteredRows = liveData.results.filter((item) => {
+      const searchText =
+        `${item.code} ${item.program} ${item.student} ${item.team} ${item.category} ${item.prize} ${item.grade}`.toLowerCase();
 
-    const matchesSearch = searchText.includes(search.toLowerCase());
-    const matchesCategory =
-      activeCategory === "All" || item.category === activeCategory;
-    const matchesTeam = activeTeam === "All" || item.team === activeTeam;
-    const matchesPrize = activePrize === "All" || item.prize === activePrize;
+      const matchesSearch = searchText.includes(search.toLowerCase());
+      const matchesCategory =
+        activeCategory === "All" || item.category === activeCategory;
+      const matchesTeam = activeTeam === "All" || item.team === activeTeam;
+      const matchesPrize = activePrize === "All" || item.prize === activePrize;
 
-    return matchesSearch && matchesCategory && matchesTeam && matchesPrize;
-  });
+      return matchesSearch && matchesCategory && matchesTeam && matchesPrize;
+    });
 
-  return buildResultPageProgramGroups(filteredRows);
-}, [search, activeCategory, activeTeam, activePrize, liveData.results]);
+    return buildResultPageProgramGroups(filteredRows);
+  }, [search, activeCategory, activeTeam, activePrize, liveData.results]);
 
   return (
     <main className="min-h-screen bg-[#f6f3ee] px-6 py-8 text-[#111111] md:px-14">
@@ -189,23 +184,23 @@ export default function ResultPage() {
         <section className="mb-16 rounded-[42px] bg-[#f6f3ee] p-6 shadow-[14px_14px_30px_#d8d3cc,-14px_-14px_30px_#ffffff] md:p-10">
           <div className="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div>
-              <SectionMiniLabel icon={<BarChart3 />} text="Live Result" />
+              <SectionMiniLabel icon={<BarChart3 />} text="Final Result" />
 
               <h1 className="text-5xl font-black tracking-[-0.05em] md:text-7xl">
                 Result Dashboard
               </h1>
 
               <p className="mt-5 max-w-2xl text-base font-medium leading-7 text-[#666]">
-                Overall champions, category leaders, and full result cards in one
-                live dashboard.
+                Final champions, category leaders, and full result cards of
+                UNMUTE2K26.
               </p>
             </div>
 
-            <LiveStatus
+            <FinalStatus
               loading={loading}
-              source={liveData.source || "unknown"}
+              success={liveData.success}
               lastUpdated={lastUpdated}
-              onRefresh={fetchLiveData}
+              onReload={fetchFinalData}
             />
           </div>
 
@@ -223,8 +218,8 @@ export default function ResultPage() {
             </h2>
 
             <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-[#666]">
-              Search by program code, program name, student name, team, category,
-              prize, or grade.
+              Search by program code, program name, student name, team,
+              category, prize, or grade.
             </p>
           </div>
 
@@ -276,25 +271,25 @@ export default function ResultPage() {
             </select>
           </div>
 
-         <div className="mb-8 flex w-fit items-center gap-3 rounded-full bg-[#f6f3ee] px-5 py-3 shadow-[6px_6px_14px_#d8d3cc,-6px_-6px_14px_#ffffff]">
-  <Filter className="h-4 w-4 text-[#e81818]" />
-  <span className="text-sm font-black">
-    {filteredProgramResults.length} program results found
-  </span>
-</div>
+          <div className="mb-8 flex w-fit items-center gap-3 rounded-full bg-[#f6f3ee] px-5 py-3 shadow-[6px_6px_14px_#d8d3cc,-6px_-6px_14px_#ffffff]">
+            <Filter className="h-4 w-4 text-[#e81818]" />
+            <span className="text-sm font-black">
+              {filteredProgramResults.length} program results found
+            </span>
+          </div>
 
-{filteredProgramResults.length > 0 ? (
-  <div className="grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-3">
-    {filteredProgramResults.map((programResult) => (
-      <ProgramResultCard
-        key={programResult.key}
-        programResult={programResult}
-      />
-    ))}
-  </div>
-) : (
-  <EmptyState />
-)}
+          {filteredProgramResults.length > 0 ? (
+            <div className="grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-3">
+              {filteredProgramResults.map((programResult) => (
+                <ProgramResultCard
+                  key={programResult.key}
+                  programResult={programResult}
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyState />
+          )}
         </section>
       </section>
     </main>
@@ -313,23 +308,23 @@ function Header() {
       </Link>
 
       <Link
-  href="/individual-results"
-  className="hidden items-center gap-3 rounded-full bg-[#111111] px-6 py-4 text-sm font-black text-white shadow-[8px_8px_18px_#d8d3cc,-8px_-8px_18px_#ffffff] transition hover:scale-105 md:flex"
->
-  Individual Results
-  <Trophy className="h-4 w-4 text-[#f2b600]" />
-</Link>
+        href="/individual-results"
+        className="hidden items-center gap-3 rounded-full bg-[#111111] px-6 py-4 text-sm font-black text-white shadow-[8px_8px_18px_#d8d3cc,-8px_-8px_18px_#ffffff] transition hover:scale-105 md:flex"
+      >
+        Individual Results
+        <Trophy className="h-4 w-4 text-[#f2b600]" />
+      </Link>
 
       <div className="flex items-center gap-3 rounded-[28px] bg-[#f6f3ee] px-5 py-4 shadow-[8px_8px_18px_#d7d2ca,-8px_-8px_18px_#ffffff]">
         <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[inset_4px_4px_8px_#d8d3cc,inset_-4px_-4px_8px_#ffffff]">
-  <Image
-    src="/brand/unmute-menu-icon.png"
-    alt="UNMUTE2K26 Logo"
-    width={40}
-    height={40}
-    className="h-10 w-10 object-contain"
-  />
-</div>
+          <Image
+            src="/brand/unmute-menu-icon.png"
+            alt="UNMUTE2K26 Logo"
+            width={40}
+            height={40}
+            className="h-10 w-10 object-contain"
+          />
+        </div>
 
         <div className="hidden text-left sm:block">
           <p className="text-lg font-black tracking-tight">
@@ -344,43 +339,52 @@ function Header() {
   );
 }
 
-function LiveStatus({
+function FinalStatus({
   loading,
-  source,
+  success,
   lastUpdated,
-  onRefresh,
+  onReload,
 }: {
   loading: boolean;
-  source: string;
+  success: boolean;
   lastUpdated: string;
-  onRefresh: () => void;
+  onReload: () => void;
 }) {
-  const isLive = source === "google-apps-script";
+  const isReady = !loading && success;
 
   return (
     <div className="flex flex-wrap items-center gap-4">
       <div className="flex w-fit items-center gap-3 rounded-full bg-[#f6f3ee] px-5 py-3 shadow-[6px_6px_14px_#d8d3cc,-6px_-6px_14px_#ffffff]">
         <span
           className={`h-3 w-3 rounded-full ${
-            isLive ? "bg-[#00c853]" : "bg-[#e81818]"
-          } ${isLive ? "shadow-[0_0_14px_#00c853]" : ""}`}
+            loading
+              ? "bg-[#f2b600]"
+              : isReady
+              ? "bg-[#00c853]"
+              : "bg-[#e81818]"
+          } ${isReady ? "shadow-[0_0_14px_#00c853]" : ""}`}
         />
+
         <span className="text-sm font-black">
-          {loading ? "Loading..." : isLive ? "Live Sheet Connected" : "Fallback"}
+          {loading
+            ? "Loading Final Results..."
+            : isReady
+            ? "Final Results Loaded"
+            : "Result Data Issue"}
         </span>
       </div>
 
       <button
-        onClick={onRefresh}
+        onClick={onReload}
         className="flex items-center gap-3 rounded-full bg-[#e81818] px-5 py-3 text-sm font-black text-white shadow-[8px_8px_18px_#d5b8b8,-8px_-8px_18px_#ffffff] transition hover:scale-105"
       >
         <RefreshCcw className="h-4 w-4" />
-        Refresh
+        Reload
       </button>
 
       {lastUpdated && (
         <p className="text-xs font-black uppercase tracking-[0.16em] text-[#777]">
-          Updated {lastUpdated}
+          Loaded {lastUpdated}
         </p>
       )}
     </div>
@@ -441,13 +445,13 @@ function CategoryTeamScore({
           </h2>
 
           <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-[#666]">
-            Track which team is dominating each category from Bidaya to Kulliyah.
+            Track which team dominated each category from Bidaya to Kulliyah.
           </p>
         </div>
 
         <div className="flex w-fit items-center gap-3 rounded-full bg-[#f6f3ee] px-5 py-3 shadow-[6px_6px_14px_#d8d3cc,-6px_-6px_14px_#ffffff]">
           <Crown className="h-5 w-5 text-[#f2b600]" />
-          <span className="text-sm font-extrabold">Lead View</span>
+          <span className="text-sm font-extrabold">Final View</span>
         </div>
       </div>
 
@@ -766,15 +770,6 @@ function SectionMiniLabel({ icon, text }: { icon: ReactNode; text: string }) {
       <p className="text-sm font-black uppercase tracking-[0.22em] text-[#e81818]">
         {text}
       </p>
-    </div>
-  );
-}
-
-function ResultLine({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <span className="font-bold text-[#777]">{label}</span>
-      <span className="text-right font-black">{value}</span>
     </div>
   );
 }

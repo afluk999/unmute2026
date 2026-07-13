@@ -1,5 +1,3 @@
-"use client";
-
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -81,20 +79,48 @@ function isKulliyyaCategory(category?: string) {
   return normalizeCategoryName(category) === "Kulliyya";
 }
 
-function isTeamOnlyProgram(result: LiveResult) {
+function isCampusTalent(result: LiveResult) {
+  return normalizeText(result.program) === "campustalent";
+}
+
+function hasTeamMarker(value?: string) {
+  const text = String(value || "").toLowerCase();
+
+  return (
+    text.includes("&team") ||
+    text.includes("& team") ||
+    text.includes("&tem") ||
+    text.includes("& tem") ||
+    text.includes("and team")
+  );
+}
+
+function isGroupProgram(result: LiveResult) {
   const programType = normalizeText(result.programType);
 
   return (
     programType === "group" ||
-    programType === "campustalent" ||
-    isKulliyyaCategory(result.category)
+    hasTeamMarker(result.student) ||
+    Boolean(result.isFaceToFace) ||
+    (Array.isArray(result.participants) && result.participants.length > 1)
   );
+}
+
+function isTeamOnlyProgram(result: LiveResult) {
+  // Campus Talent is the special Kulliyya exception:
+  // it counts as an individual programme.
+  if (isCampusTalent(result)) return false;
+
+  // All other Kulliyya programmes are excluded from individual totals.
+  if (isKulliyyaCategory(result.category)) return true;
+
+  return isGroupProgram(result);
 }
 
 function getIndividualPoints(result: LiveResult) {
   if (isTeamOnlyProgram(result)) return 0;
 
-  return Number(result.individualPoints ?? 0) || 0;
+  return Number(result.individualPoints ?? result.points) || 0;
 }
 
 export default function IndividualResultsPage() {
@@ -158,6 +184,7 @@ export default function IndividualResultsPage() {
     "Thaniya",
     "Thanawiyyah",
     "Aliya",
+    "Kulliyya",
   ];
 
   return (
@@ -248,7 +275,7 @@ export default function IndividualResultsPage() {
         ) : (
           <EmptyState
             title="No student result found"
-            text="Kulliyya, Group, and Campus Talent results are not counted here."
+            text="Group programmes and normal Kulliyya team programmes are not counted here. Campus Talent is included as an individual programme."
           />
         )}
       </section>
@@ -276,7 +303,10 @@ function buildStudentProfiles(results: LiveResult[]) {
       const student = participantName || "-";
       const team = result.team || "-";
       const category = normalizeCategoryName(result.category);
-      const key = `${student}__${team}__${category}`;
+      const studentCode = String(result.code || "").trim();
+      const key = studentCode
+        ? `${studentCode}__${team}__${category}`
+        : `${student}__${team}__${category}`;
 
       if (!map.has(key)) {
         map.set(key, {

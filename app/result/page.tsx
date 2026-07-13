@@ -484,10 +484,12 @@ function CategoryTeamScore({
                 </div>
 
                 <div className="space-y-5">
-                  {category.scores.map((item) => {
-                    const width = `${Math.round(
-                      (item.score / highestScore) * 100
-                    )}%`;
+                  {[...category.scores]
+                    .sort((a, b) => b.score - a.score)
+                    .map((item) => {
+                      const width = `${Math.round(
+                        (item.score / highestScore) * 100
+                      )}%`;
 
                     return (
                       <div key={`${category.category}-${item.team}`}>

@@ -73,15 +73,15 @@ type LiveData = {
 };
 
 const fallbackData: LiveData = {
-  success: false,
-  source: "fallback",
+  success: true,
+  source: "official-final-fallback",
   teams: [
     {
       rank: 1,
       name: "Vectors",
       team: "Vectors",
       color: "#2aa1b3",
-      score: 0,
+      score: 1547,
       difference: "+0",
     },
     {
@@ -89,23 +89,22 @@ const fallbackData: LiveData = {
       name: "Vanguards",
       team: "Vanguards",
       color: "#bf7d2a",
-      score: 0,
-      difference: "+0",
+      score: 1477,
+      difference: "-70",
     },
     {
       rank: 3,
       name: "Vortex",
       team: "Vortex",
       color: "#b41f6c",
-      score: 0,
-      difference: "-",
+      score: 1396,
+      difference: "-151",
     },
   ],
   results: [],
   latestResults: [],
   categoryToppers: [],
 };
-
 export default function Home() {
 const [liveData, setLiveData] = useState<LiveData>(fallbackData);
 const [lastUpdated, setLastUpdated] = useState("");
@@ -139,14 +138,8 @@ const [showLoader, setShowLoader] = useState(true);
   }
 
   useEffect(() => {
-    fetchLiveData();
-
-    const interval = setInterval(() => {
-      fetchLiveData();
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
+  fetchLiveData();
+}, []);
 
  
 useEffect(() => {

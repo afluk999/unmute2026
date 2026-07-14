@@ -209,11 +209,11 @@ export const officialCategoryToppers = [
   },
   {
     "category": "Aliya",
-    "chestNo": "305",
-    "student": "ABDULLA HADI KK",
-    "team": "Vortex",
-    "points": 51,
-    "program": "MR TRANSLATOR"
+    "chestNo": "280",
+    "student": "HADI NAJAD M P",
+    "team": "Vanguards",
+    "points": 62,
+    "program": "LECTURING ENG"
   },
   {
     "category": "Kulliyah",
@@ -12649,9 +12649,9 @@ export const finalResults: FinalResult[] = [
   {
     "id": "result-691",
     "programCode": "AS7",
-    "code": "208",
+    "code": "280",
     "program": "LECTURING ENG",
-    "student": "AHAMMAD SAINUDEEN",
+    "student": "HADI NAJAD M P",
     "team": "Vanguards",
     "category": "Aliya",
     "prize": "First Prize",
